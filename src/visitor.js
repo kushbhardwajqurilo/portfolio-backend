@@ -27,6 +27,7 @@ exports.trackVisitor = async (req, res) => {
     let location = {};
     try {
       const response = await axios.get(`http://ip-api.com/json/${ip}`);
+
       location = {
         country: response.data.country || "Unknown",
         region: response.data.regionName || "Unknown",
