@@ -7,8 +7,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     origin: [
-      "https://my-portfolio-two-gamma-22.vercel.app/",
       "http://localhost:5173",
+      "https://my-portfolio-two-gamma-22.vercel.app/",
     ],
     methods: ["POST"],
     credentials: true,

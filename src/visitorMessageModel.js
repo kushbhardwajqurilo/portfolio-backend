@@ -15,6 +15,15 @@ const visitoreMessageSchema = new mongoose.Schema({
   },
 });
 
+const vistoreRecordSchema = new mongoose.Schema({
+  ip: { type: String, unique: true, required: true }, // 🔥 unique IP
+  country: { type: String, default: "Unknown" },
+  region: { type: String, default: "Unknown" },
+  city: { type: String, default: "Unknown" },
+  createdAt: { type: Date, default: Date.now },
+});
+
+const visitorRecorModel = mongoose.model("VisitorRecord", vistoreRecordSchema);
 const vistorModel = mongoose.model("visitorMessage", visitoreMessageSchema);
 
-module.exports = vistorModel;
+module.exports = { vistorModel, visitorRecorModel };

@@ -1,42 +1,57 @@
-const vistorModel = require("./visitorMessageModel");
-
+const { visitorRecorModel, vistorModel } = require("./visitorMessageModel");
 exports.trackVisitor = async (req, res) => {
   try {
-    console.log("hello visitor");
-    // Get visitor IP
-    const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+    console.log("📡 Tracking visitor...");
 
-    // Optional: get approximate location from IP
+    // Get visitor IP safely
+    const ip =
+      (req.headers["x-forwarded-for"] || "").split(",")[0].trim() ||
+      req.socket.remoteAddress;
+
+    if (!ip) {
+      return res.status(400).json({ success: false, message: "IP not found" });
+    }
+
+    // Check if visitor already exists
+    const existingVisitor = await visitorRecorModel.findOne({ ip });
+    if (existingVisitor) {
+      console.log("⚠️ Visitor already tracked:", ip);
+      return res.status(200).json({
+        success: true,
+        message: "Visitor already tracked",
+        data: existingVisitor,
+      });
+    }
+
+    // Get location from IP
     let location = {};
     try {
       const response = await axios.get(`http://ip-api.com/json/${ip}`);
       location = {
-        country: response.data.country,
-        region: response.data.regionName,
-        city: response.data.city,
+        country: response.data.country || "Unknown",
+        region: response.data.regionName || "Unknown",
+        city: response.data.city || "Unknown",
       };
-      console.log("loc", response);
     } catch (err) {
-      console.log("Could not get location", err.message);
+      console.log("🌍 Could not get location", err.message);
+      location = { country: "Unknown", region: "Unknown", city: "Unknown" };
     }
 
-    // Save visitor info to DB
-    // const visitor = await visitorModel.create({
-    //   name: "Guest", // optional, since ye form submit nahi kar raha
-    //   email: "",
-    //   subject: "Visitor Info",
-    //   message: "Visited website",
-    //   ip,
-    //   location,
-    // });
+    // Save new visitor
+    const visitor = await visitorRecorModel.create({
+      ip,
+      ...location,
+    });
 
-    // return res.status(200).json({
-    //   success: true,
-    //   message: "Visitor tracked successfully",
-    //   visitor,
-    // });
-    console.log("visit", location);
+    console.log("✅ New visitor added:", ip, location);
+
+    return res.status(200).json({
+      success: true,
+      message: "Visitor tracked successfully",
+      data: visitor,
+    });
   } catch (error) {
+    console.error("❌ Visitor tracking error:", error);
     return res.status(500).json({ success: false, message: error.message });
   }
 };
