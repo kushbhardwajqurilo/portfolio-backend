@@ -3,11 +3,14 @@ const path = require("path");
 const MailTrasporter = nodemailer.createTransport({
   service: "gmail",
   host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.E_EMAIL,
     pass: process.env.E_PASS,
+  },
+  tls: {
+    rejectUnauthorized: false, // 👈 fix
   },
 });
 async function SentMail(to, subject, text, html) {

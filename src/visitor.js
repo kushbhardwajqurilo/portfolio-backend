@@ -198,7 +198,7 @@ ${message}
       process.env.E_EMAIL,
       subject,
       " ",
-      adminMailTemplate(name, email, message)
+      adminMailTemplate(name, email, message),
     );
     return res.status(200).json({
       success: true,
