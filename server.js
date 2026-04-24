@@ -10,6 +10,6 @@ const PORT = process.env.PORT || 4001;
   http
     .createServer(app)
     .listen(PORT, () =>
-      console.log(`✅  Local server on http://localhost:${PORT}`)
+      console.log(`✅  Local server on http://localhost:${PORT}`),
     );
 })();
