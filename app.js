@@ -7,6 +7,7 @@ const allowedOrigins = [
   "https://my-portfolio-two-gamma-22.vercel.app",
   "https://4frnn03l-5173.inc1.devtunnels.ms",
   "http://localhost:5173",
+  "http://localhost:5173/",
   "https://iamkush.in",
   "https://www.iamkush.in",
 ];
